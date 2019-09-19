@@ -1,0 +1,24 @@
+
+[Unit]
+Description=HttpNetMap  service  start with os service, and we use systemctl tool to help manage service
+After=syslog.target network.target
+Documentation=https://www.xxxx.com
+
+[Service]
+User=root
+#Type=forking
+PIDFile=/usr/local/cexeclibs/service.pid
+ExecStart=/usr/local/netmap/manager
+#ExecReload=/usr/sbin/caemanage restart
+#ExecStop=/usr/sbin/caemanage stop
+TimeoutStopSec=10
+TimeoutStartSec=10
+KillSignal=SIGQUIT
+KillMode=process
+Restart=always
+#PrivateTmp=true
+
+
+[Install]
+WantedBy=multi-user.target
+
