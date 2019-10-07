@@ -35,7 +35,7 @@ class _Base(object):
 
     def _fetch_data(self, req, **kwargs):
         try:
-            return req.media
+            return req.params or {}
         except:
             raise falcon.HTTPError(status=falcon.HTTP_400, title="data error",
                                    description="请求数据需为json", code=400, headers=header)
@@ -88,6 +88,9 @@ class BaseResponse(_Base):
     def delete(self, req, data, resp, **kwargs):
         raise MethodNotAllowed(status=falcon.HTTP_405, title="not define")
 
+    def __build_filter(self, data):
+        pass
+
     def on_get(self, req, resp, **kwargs):
         '''
         Handles get requests
@@ -105,11 +108,19 @@ class BaseResponse(_Base):
         try:
             if kwargs:
                 self._before_detail(req, data, **kwargs)
-                self.detail(req, data, resp, **kwargs)
+                result = self.detail(req, data, resp, **kwargs)
             else:
+                order_by = data.pop("order_by", None)
+                limit = data.pop("limit", None)
+                offset = data.pop("offset", None)
                 self._before_list(req, data=data)
-                result = self.list(req, data, resp)
-            resp.status = falcon.HTTP_200
+                count, _data = self.list(req, data, resp, offset=offset, limit=limit, order_by=order_by)
+                result = {"count": count, "data": _data}
+
+            if result:
+                resp.status = falcon.HTTP_200
+            else:
+                resp.status = falcon.HTTP_404
         except (ValueError, TypeError, IndexError, UnicodeError) as e:
             logger.info(traceback.format_exc())
             resp.status = falcon.HTTP_400
@@ -183,9 +194,12 @@ class BaseResponse(_Base):
         result = {}
         try:
             self._before_update(req, data=data, **kwargs)
-            num, cid = self.update(req=req, data=data, resp=resp, **kwargs)
-            result = {"num": num, "id": cid}
-            resp.status = falcon.HTTP_200
+            num, update_data = self.update(req=req, data=data, resp=resp, **kwargs)
+            if update_data:
+                result = {"num": num, "id": update_data}
+                resp.status = falcon.HTTP_200
+            else:
+                resp.status = falcon.HTTP_404
         except (ValueError, TypeError, IndexError, UnicodeError) as e:
             logger.info(traceback.format_exc())
             resp.status = falcon.HTTP_400
@@ -231,9 +245,11 @@ class BaseResponse(_Base):
         result = {}
         try:
             self._before_delete(req, data=data, **kwargs)
-            num = self.delete(req=req, data=data, resp=resp, **kwargs)
-            result = {"num": num}
-            resp.status = falcon.HTTP_200
+            result = self.delete(req=req, data=data, resp=resp, **kwargs)
+            if result:
+                resp.status = falcon.HTTP_200
+            else:
+                resp.status = falcon.HTTP_404
         except (ValueError, TypeError, IndexError, UnicodeError) as e:
             logger.info(traceback.format_exc())
             resp.status = falcon.HTTP_400

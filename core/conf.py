@@ -20,12 +20,22 @@ LOG_MSG_MAX_LEN = Config.getInt("LOG", "msg.max.len", default=2048)
 
 MQ_TYPE = Config.get("MQ", "type", default="kafka")
 MQ_SERVICE = Config.getList("MQ", "service")
+MQ_KAFKA_TOPIC = Config.getList("MQ", "kafka.topic")
+MQ_KAFKA_GROUP = Config.get("MQ", "kafka.group", "NetmapGroup")
 MQ_DRIVERS = Config.get("MQ", "drivers", default="")
 
 CACHE_TYPE = Config.get("CACHE", "type", default="redis")
 CACHE_SERVICE = Config.getList("CACHE", "service")
+CACHE_PORT = Config.getInt("CACHE", "port", default=6379)
+CACHE_DB = Config.getList("CACHE", "db", default=0)
+CACHE_PASSWORD = Config.getList("CACHE", "password")
+CACHE_MAX_CONNECTION = Config.getInt("CACHE", "max.connection", default=3000)
 CACHE_DRIVERS = Config.get("CACHE", "drivers", default="")
 
 NEO4J_SERVICE = Config.get("NEO4J", "service")
+NEO4J_HTTP_PORT = Config.getInt("NEO4J", "http_port", 7474)
+NEO4J_BOLT_PORT = Config.get("NEO4J", "bolt_port", 7687)
+NEO4J_USERNAME = Config.get("NEO4J", "username", None)
+NEO4J_PASSWORD = Config.get("NEO4J", "password", None)
 
 MYSQL_SERVICE = Config.get("MYSQL", "service")

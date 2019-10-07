@@ -6,7 +6,7 @@ import configparser
 
 class ConfigReader(object):
     def __init__(self, configPath=None):
-        self.__configPath__ = configPath or "./conf/app.conf"
+        self.__configPath__ = configPath or "../../conf/app.conf"
         self.__defaultConfig__ = configparser.ConfigParser(allow_no_value=True)
 
         self.__default__ = None
