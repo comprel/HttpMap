@@ -3,7 +3,7 @@
 
 class MQBase(object):
     def producer(self, msg, topic):
-        raise IndentationError("not define")
+        raise AttributeError("not define")
 
     def consumer(self, msg, topic):
-        raise IndentationError("not define")
+        raise AttributeError("not define")
