@@ -39,3 +39,9 @@ NEO4J_USERNAME = Config.get("NEO4J", "username", None)
 NEO4J_PASSWORD = Config.get("NEO4J", "password", None)
 
 MYSQL_SERVICE = Config.get("MYSQL", "service")
+
+MONGO_SERVICE = Config.get("MONGODB", "service")
+MONGO_PORT = Config.getInt("MONGODB", "port", default=27017)
+MONGO_DB = Config.get("MONGODB", "db", default="netmap")
+MONGO_USER = Config.get("MONGODB", "user")
+MONGO_PASSWORD = Config.get("MONGODB", "password")

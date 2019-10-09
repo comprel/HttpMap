@@ -252,7 +252,7 @@ class Neo4jDriver(object):
         else:
             return 0
 
-    def match_relation(self, primary_key1, primary_key2, re_type=Node):
+    def match_node_relation(self, primary_key1, primary_key2, re_type=None):
         _result = []
         connection = get_connection()
         key1 = {self.primary_key: primary_key1}
@@ -265,6 +265,32 @@ class Neo4jDriver(object):
         for relation in relations:
             retype = re_type or relation.__class__.__name__
             _result.append(retype)
+
+        return _result
+
+    def match_node(self, primary_key1, re_type=None):
+        _result = []
+        connection = get_connection()
+        key1 = {self.primary_key: primary_key1}
+        node1 = connection.nodes.match(self.table_name, **key1).first()
+        if node1 is None:
+            return _result
+        relations = connection.match(nodes=(node1,), re_type=re_type)
+        for relation in relations:
+            retype = re_type or relation.__class__.__name__
+            _res = {retype: {"start": dict(relation.start_node), "end_node": dict(relation.end_node)}}
+            _result.append(_res)
+
+        return _result
+
+    def match_relation(self, re_type=None):
+        _result = []
+        connection = get_connection()
+        relations = connection.match(re_type=re_type)
+        for relation in relations:
+            retype = re_type or relation.__class__.__name__
+            _res = {retype: {"start": dict(relation.start_node), "end_node": dict(relation.end_node)}}
+            _result.append(_res)
 
         return _result
 

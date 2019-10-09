@@ -1,10 +1,4 @@
-
-
-class Net(object):
-    def run(self):
-        pass
-
+from tasks.manager import AccessDraw
 
 if __name__ == '__main__':
-    Net().run()
-
+    AccessDraw().run()

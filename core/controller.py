@@ -5,12 +5,10 @@ from lib.logs import logger
 from lib.format_json import to_str
 from lib.uuidlib import allocate_uuid
 from core.conf import LOG_MSG_MAX_LEN
+from core.common_exception import MethodNotAllowed
+from core.common_exception import ResourceNotFound
 
 header = {"Content-Type": "application/json"}
-
-
-class MethodNotAllowed(falcon.HTTPError):
-    pass
 
 
 class _Base(object):
@@ -111,6 +109,11 @@ class BaseResponse(_Base):
                 result = self.detail(req, data, resp, **kwargs)
             else:
                 order_by = data.pop("order_by", None)
+                if order_by:
+                    if order_by.endswith("__-1"):
+                        order_by = "-%s" % order_by.strip("__-1")
+                    if order_by.endswith("__1"):
+                        order_by = order_by.strip("__1")
                 limit = data.pop("limit", None)
                 offset = data.pop("offset", None)
                 self._before_list(req, data=data)
@@ -125,6 +128,8 @@ class BaseResponse(_Base):
             logger.info(traceback.format_exc())
             resp.status = falcon.HTTP_400
             result = {"title": e.__class__.__name__, "description": e.args[0], "code": 400}
+        except (ResourceNotFound) as e:
+            resp.status = falcon.HTTP_404
         except (MethodNotAllowed) as e:
             logger.info(traceback.format_exc())
             resp.status = falcon.HTTP_405
@@ -163,6 +168,8 @@ class BaseResponse(_Base):
             logger.info(traceback.format_exc())
             resp.status = falcon.HTTP_400
             result = {"title": e.__class__.__name__, "description": e.args[0], "code": 400}
+        except (ResourceNotFound) as e:
+            resp.status = falcon.HTTP_404
         except (MethodNotAllowed) as e:
             logger.info(traceback.format_exc())
             resp.status = falcon.HTTP_405
@@ -204,6 +211,8 @@ class BaseResponse(_Base):
             logger.info(traceback.format_exc())
             resp.status = falcon.HTTP_400
             result = {"title": e.__class__.__name__, "description": e.args[0], "code": 400}
+        except (ResourceNotFound) as e:
+            resp.status = falcon.HTTP_404
         except (MethodNotAllowed) as e:
             logger.info(traceback.format_exc())
             resp.status = falcon.HTTP_405
@@ -254,6 +263,8 @@ class BaseResponse(_Base):
             logger.info(traceback.format_exc())
             resp.status = falcon.HTTP_400
             result = {"title": e.__class__.__name__, "description": e.args[0], "code": 400}
+        except (ResourceNotFound) as e:
+            resp.status = falcon.HTTP_404
         except (MethodNotAllowed) as e:
             logger.info(traceback.format_exc())
             resp.status = falcon.HTTP_405

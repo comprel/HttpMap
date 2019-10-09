@@ -1,5 +1,7 @@
 from lib.ip import getRequestIpaddress
+from lib.format_json import to_str
 from core.controller import BaseResponse
+from driver.CACHE.Redis import Redis
 from dbs.host.api import HostApi
 from dbs.host.api import IpaddressApi
 from dbs.host.graphApi import HostGraphApi
@@ -32,7 +34,9 @@ class HostRegister(BaseResponse):
         data["ipaddress"] = getRequestIpaddress(req)
         self.on_ipaddress_create(uuid, data)
         self.on_graph_create(uuid, data)
-        return hostApi.insert(data)
+        count, cid = hostApi.insert(data)
+        Redis.set(uuid, to_str(data=data))
+        return count.cid
 
 
 class HostUnRegister(BaseResponse):
@@ -49,6 +53,7 @@ class HostUnRegister(BaseResponse):
         _host = HostApi().get(primiry_id=uuid)
         if not _host:
             return {}
+        Redis.delete(uuid)
         self.on_ipaddress_delete(uuid)
         self.on_graph_delete(uuid)
         return HostApi().delete(primiry_id=uuid)

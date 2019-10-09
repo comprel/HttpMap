@@ -1,5 +1,4 @@
 
-
 http sniffer:
 1. justniffer
 2. httpry
@@ -17,3 +16,6 @@ httpry
 yum install gcc make git libpcap-devel
 下载源码包：
 https://github.com/jbittel/httpry
+
+make
+make install

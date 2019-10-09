@@ -5,4 +5,5 @@ py2neo
 retrying
 redis
 kafka
+pymongo
 IPy

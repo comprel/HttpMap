@@ -1,22 +1,18 @@
 
 [Unit]
-Description=HttpNetMap task service
+Description=NetMap task service
 After=syslog.target network.target
 Documentation=https://www.xxxx.com
 
 [Service]
 User=root
-#Type=forking
-PIDFile=/usr/local/cexeclibs/service.pid
-ExecStart=/usr/local/netmap/manager
-#ExecReload=/usr/sbin/caemanage restart
-#ExecStop=/usr/sbin/caemanage stop
+PIDFile=/usr/local/netmapService/run/task.pid
+ExecStart=/bin/python /usr/local/netmapService/service/broker.py
 TimeoutStopSec=10
 TimeoutStartSec=10
 KillSignal=SIGQUIT
 KillMode=process
 Restart=always
-#PrivateTmp=true
 
 
 [Install]

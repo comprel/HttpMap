@@ -1,4 +1,6 @@
+from lib.format_json import to_str
 from core.controller import BaseResponse
+from driver.CACHE.Redis import Redis
 from dbs.host.api import HostApi
 from dbs.host.api import IpaddressApi
 from dbs.host.graphApi import HostGraphApi
@@ -32,6 +34,7 @@ class HostIdHandler(BaseResponse):
             raise ValueError("ipaddress 不允许更新， 默认为主机注册ip， 如需更改请重新注册")
         count, after_data = HostApi().update(primiry_id=uuid, data=data)
         if count:
+            Redis.delete(uuid)
             self.on_graph_update(uuid=uuid, data=data)
         return count, after_data
 
@@ -45,6 +48,7 @@ class HostIdHandler(BaseResponse):
         uuid = kwargs.pop("uuid", None)
         result = HostApi().delete(primiry_id=uuid)
         if result:
+            Redis.delete(uuid)
             self.on_graph_delete(uuid)
             self.on_ipaddress_delete(uuid)
         return result

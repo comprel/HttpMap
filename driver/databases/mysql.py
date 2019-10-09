@@ -42,7 +42,7 @@ class Mysql(object):
             raise AttributeError("not define")
 
     def _validate_prikey(self, data):
-        if self.primary_key not in data.keys():
+        if self.primary_key not in dat.keys():
             raise ValueError("没有主键")
 
     def _before_insert(self, data):

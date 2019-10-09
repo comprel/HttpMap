@@ -8,6 +8,6 @@ from core.base import APP
 
 if __name__ == '__main__':
     print("Starting ...")
-    httpd = simple_server.make_server(IPPADDRESS, 8090, APP)
+    httpd = simple_server.make_server(IPPADDRESS, PORT, APP)
     logger.info("service listen at %s:%s" % (IPPADDRESS, PORT))
     httpd.serve_forever()

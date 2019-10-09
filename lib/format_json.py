@@ -13,3 +13,7 @@ def __default(obj):
 
 def to_str(data):
     return json.dumps(data, default=__default)
+
+
+def to_json(data):
+    return json.loads(data)
